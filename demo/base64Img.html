@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>文件Base64</title>
+    <style>
+        body {
+            word-break: break-all;
+        }
+    </style>
+</head>
+<body>
+<script>
+    window.addEventListener("dragenter", function (event) {
+        event.preventDefault();
+    }, false);
+    window.addEventListener("dragover", function (event) {
+        event.preventDefault();
+    }, false);
+    window.addEventListener("drop", function (event) {
+        var reader = new FileReader();
+        reader.onload = function (e) {
+            document.body.insertAdjacentHTML("afterBegin", '<p>' + e.target.result + '</p>');  // base64 encoded file data!
+            document.body.insertAdjacentHTML("afterBegin", "<img src='" + e.target.result + "'/>");
+        };
+        reader.readAsDataURL(event.dataTransfer.files[0]);
+        event.preventDefault();
+    }, false);
+</script>
+</body>
+</html>
