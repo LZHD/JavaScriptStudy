@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title></title>
+    <style media="screen">
+      * {
+        padding: 0;
+        margin: 0;
+      }
+      #mycanvas {
+        border: 1px solid gray;
+      }
+    </style>
+  </head>
+  <body>
+    <canvas id="mycanvas" width="800" height="600"></canvas>
+  </body>
+  <script src="js/geometry-0.2.js" charset="utf-8"></script>
+  <script type="text/javascript">
+    var mycanvas = document.getElementById("mycanvas");
+    var ctx = mycanvas.getContext("2d");
+
+    var sun = new Circle(new Point(400, 300), 30);
+    var earthPath = new Circle(sun.origin, 200);
+    var earth = new Circle(new Point(earthPath.origin.x + earthPath.radius, earthPath.origin.y), 20, Math.PI / 180, earthPath);
+    var moonPath = new Circle(earth.origin, 80, earth.angularVelocity, earthPath);
+    var moon = new Circle(new Point(moonPath.origin.x + moonPath.radius, moonPath.origin.y), 10, -Math.PI / 180 * 1.5, moonPath);
+    var roles = [sun, earthPath, earth, moonPath, moon];
+
+    function animate() {
+      ctx.clearRect(0, 0, mycanvas.width, mycanvas.height);
+
+      for (var i = 0; i < roles.length; i++) {
+        roles[i].nextPosition(ctx);
+      }
+
+      window.requestAnimationFrame(arguments.callee);
+    }
+
+    requestAnimationFrame(animate);
+
+  </script>
+</html>

@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title></title>
+    <style media="screen">
+      * {
+        padding: 0;
+        margin: 0;
+      }
+      #mycanvas {
+        border: 1px solid gray;
+      }
+    </style>
+  </head>
+  <body>
+    <canvas id="mycanvas" width="800" height="600"></canvas>
+  </body>
+  <script src="js/geometry-0.1.js" charset="utf-8"></script>
+  <script type="text/javascript">
+    var mycanvas = document.getElementById("mycanvas");
+    var ctx = mycanvas.getContext("2d");
+
+    var sun = new Circle(new Point(400, 300), 30, 0);
+    sun = new Circle({x: 400, y: 300}, 30, 0);
+    var earthPath = new Circle(sun.origin, 200, 0);
+    var earth = new Circle(new Point(earthPath.origin.x + earthPath.radius, earthPath.origin.y), 20, Math.PI / 180);
+    var moonPath = new Circle(earth.origin, 80, earth.angularVelocity);
+    var moon = new Circle(new Point(moonPath.origin.x + moonPath.radius, moonPath.origin.y), 10, -Math.PI / 180 * 1.5);
+
+    function animate() {
+      ctx.clearRect(0, 0, mycanvas.width, mycanvas.height);
+
+      sun.draw(ctx);
+      earthPath.draw(ctx);
+
+      earth.origin.x = earthPath.origin.x + earthPath.radius * Math.cos(earth.angel);
+      earth.origin.y = earthPath.origin.y + earthPath.radius * Math.sin(earth.angel);
+      earth.draw(ctx);
+      earth.angel += earth.angularVelocity;
+
+      moonPath.origin.x = earthPath.origin.x + earthPath.radius * Math.cos(moonPath.angel);
+      moonPath.origin.y = earthPath.origin.y + earthPath.radius * Math.sin(moonPath.angel);
+      moonPath.draw(ctx);
+      moonPath.angel += moonPath.angularVelocity;
+
+      moon.origin.x = moonPath.origin.x + moonPath.radius * Math.cos(moon.angel);
+      moon.origin.y = moonPath.origin.y + moonPath.radius * Math.sin(moon.angel);
+      moon.draw(ctx);
+      moon.angel += moon.angularVelocity;
+
+      window.requestAnimationFrame(arguments.callee);
+    }
+
+    requestAnimationFrame(animate);
+
+  </script>
+</html>

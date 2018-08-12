@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>画板</title>
+    <style media="screen">
+      * {
+        padding: 0px;
+        margin: 0px;
+      }
+
+      #myCanvas {
+        border: 5px solid red;
+        box-sizing: content-box;
+      }
+
+      #choose {
+        display: inline-block;
+        vertical-align: top;
+      }
+
+      button {
+        width: 60px;
+        height: 40px;
+        font-size: 1rem;
+        display: block;
+      }
+
+      input {
+        width: 60px;
+      }
+    </style>
+  </head>
+  <body>
+    <canvas id="myCanvas" width="1000" height="800">升级浏览器</canvas>
+    <div id="choose">
+      <button type="button" name="button">直线</button>
+      <button type="button" name="button">圆圈</button>
+      <button type="button" name="button">圆形</button>
+      <button type="button" name="button">方框</button>
+      <button type="button" name="button">矩形</button>
+      <button type="button" name="button">重置</button>
+      <button type="button" name="button">清屏</button>
+      <button type="button" name="button">导出</button>
+      颜色:<br><input class="jscolor" value="ab2567"><br>
+      线宽:<br><input class='xk' type="text" name="name" value="10">
+    </div>
+    <img src="" id="image_png">
+    <script src="js/jscolor.min.js" charset="utf-8"></script>
+    <script type="text/javascript">
+      var btns = document.querySelectorAll('button');
+      var myCanvas = document.querySelector('#myCanvas');
+      var jscolor = document.querySelector('.jscolor');
+      var xk = document.querySelector('.xk');
+      var context = myCanvas.getContext('2d');
+      var onOrOff = false;
+      var oldX = 0;
+      var oldY = 0;
+      var upX = 0;
+      var upY = 0;
+      var index = 0;
+      var Color = null;
+      var lineW = null;
+
+      btns[0].onclick = function () {
+        index = 1;
+        console.log(index);
+      }
+
+      btns[1].onclick = function () {
+        index = 2;
+      }
+
+      btns[2].onclick = function () {
+        index = 3;
+        console.log(index);
+      }
+
+      btns[3].onclick = function () {
+        index = 4;
+      }
+
+      btns[4].onclick = function () {
+        index = 5;
+        console.log(index);
+      }
+
+      btns[5].onclick = function () {
+        index = 0;
+      }
+
+      btns[6].onclick = function () {
+        context.clearRect(0, 0, 1000, 800);
+        context.fillStyle = 'black';
+        context.fillRect(0, 0, 1000, 1000);
+      }
+      var img = document.querySelector('#image_png');
+      btns[7].onclick = function () {
+        var imgURL = myCanvas.toDataURL('image/png');
+    		img.src = imgURL;
+      }
+      //画一个黑色的矩形
+      context.fillRect(0, 0, 1000, 1000);
+      //添加鼠标按下事件
+      myCanvas.addEventListener('mousedown', Ddown, false);
+      myCanvas.addEventListener('mouseup', Dup, false);
+      myCanvas.addEventListener('mousemove', Dmove, false);
+
+      function Ddown(event) {
+        var event = window.event || event;
+        oldX = event.clientX;
+        oldY = event.clientY;
+        onOrOff = true;
+        Color = jscolor.value;
+        lineW = parseInt(xk.value);
+      }
+
+      function Dup() {
+        onOrOff = false;
+        upX = event.clientX;
+        upY = event.clientY;
+        if (index == 1) {
+          context.beginPath();
+          context.lineWidth = lineW;
+          context.moveTo(oldX, oldY);
+          context.lineTo(upX, upY);
+          context.strokeStyle = '#' + Color;
+          context.stroke();
+          context.closePath();
+        }
+        if (index == 2) {
+          context.beginPath();
+          context.lineWidth = lineW;
+          context.arc(oldX, oldY, Math.sqrt(Math.pow(upX - oldX,2) + Math.pow(upY - oldY,2)), 0, 2*Math.PI, false);
+          context.strokeStyle = '#' + Color;
+          context.stroke();
+          context.closePath();
+        }
+        if (index == 4) {
+          context.lineWidth = lineW;
+          context.strokeStyle = '#' + Color;
+          context.strokeRect(oldX, oldY, upX - oldX, upY - oldY);
+        }
+        if (index == 3) {
+          context.beginPath();
+          context.arc(oldX, oldY, Math.sqrt(Math.pow(upX - oldX,2) + Math.pow(upY - oldY,2)), 0, 2*Math.PI, false);
+          context.fillStyle = '#' + Color;
+          context.fill();
+          context.closePath();
+        }
+        if (index == 5) {
+          context.fillStyle = '#' + Color;
+          context.fillRect(oldX, oldY, upX - oldX, upY - oldY);
+        }
+      }
+
+      function Dmove() {
+        if (onOrOff) {
+          var newX = event.clientX;
+          var newY = event.clientY;
+          if (index == 0) {
+            context.beginPath();
+            context.moveTo(oldX, oldY);
+            context.lineTo(newX, newY);
+            context.strokeStyle = '#' + Color;
+            context.lineWidth = lineW;
+            context.lineCap = 'round';
+            context.stroke();
+            oldX = newX;
+            oldY = newY;
+          }
+        }
+      }
+    </script>
+  </body>
+</html>
