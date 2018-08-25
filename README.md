@@ -1,1 +1,1 @@
-# JavaScriptStudy
+# examples
